@@ -1,0 +1,27 @@
+{
+  "schemaVersion": 1,
+  "id": "clientscriptdiscordapi",
+  "version": "${version}",
+  "name": "ClientScript Discord API",
+  "description": "Adds the Discord API to arucas for EssentialClient",
+  "authors": [
+    "Sensei"
+  ],
+  "contact": {
+    "homepage": "",
+    "sources": "",
+    "issues": ""
+  },
+  "license": "MIT",
+  "environment": "*",
+  "entrypoints": {
+    "main": [
+      "me.senseiwells.discordapi.ClientScriptDiscordAPI"
+    ]
+  },
+  "depends": {
+    "minecraft": ">=1.17",
+    "fabricloader": ">=0.12.6",
+    "essential-client": "*"
+  }
+}

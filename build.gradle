@@ -1,0 +1,70 @@
+plugins {
+	id 'fabric-loom' version '1.0-SNAPSHOT'
+	id "com.github.johnrengelman.shadow" version "7.1.2"
+	id 'maven-publish'
+}
+
+repositories {
+	maven { url 'https://jitpack.io' }
+}
+
+configurations {
+	shade
+}
+
+archivesBaseName = project.archives_base_name
+version = project.minecraft_version+'-'+project.mod_version
+group = project.maven_group
+
+shadowJar {
+	configurations = [project.configurations.shade]
+}
+
+dependencies {
+	minecraft "com.mojang:minecraft:${project.minecraft_version}"
+	mappings "net.fabricmc:yarn:${project.yarn_mappings}:v2"
+	modImplementation "net.fabricmc:fabric-loader:${project.loader_version}"
+
+	implementation("com.github.senseiwells:Arucas:${project.arucas_version.length() > 10 ? project.arucas_version.substring(0, 10) : project.arucas_version}")
+	implementation("com.github.LlamaLad7:MixinExtras:0.0.12")
+	annotationProcessor "com.github.LlamaLad7:MixinExtras:0.0.12"
+	modImplementation files("libs/essential-client-1.19.2-1.3.2.jar")
+
+	shade implementation("com.github.senseiwells:ArucasDiscordAPI:${project.arucas_discord_api_version.length() > 10 ? project.arucas_discord_api_version.substring(0, 10) : project.arucas_discord_api_version}")
+}
+
+processResources {
+	inputs.property "version", project.version
+
+	filesMatching("fabric.mod.json") {
+		expand "version": project.version
+	}
+}
+
+tasks.withType(JavaCompile).configureEach {
+	it.options.encoding = "UTF-8"
+
+	it.options.release = 16
+}
+
+java {
+	withSourcesJar()
+}
+
+prepareRemapJar {
+	dependsOn "shadowJar"
+}
+
+shadowJar {
+	from "LICENSE"
+}
+
+publishing {
+	publications {
+		mavenJava(MavenPublication) {
+			artifact(jar) {
+				builtBy remapJar
+			}
+		}
+	}
+}
